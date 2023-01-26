@@ -1,5 +1,63 @@
 package sba.sms.services;
 
-public class StudentService  {
+import java.util.List;
+
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+
+import sba.sms.models.Course;
+import sba.sms.models.Student;
+import sba.sms.utils.HibernateUtil;
+
+public class StudentService {
+	public void createStudent(Student student) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Transaction tx = session.beginTransaction();
+		try {
+			session.persist(student);
+			tx.commit();
+		} catch (HibernateException ex) {
+			ex.printStackTrace();
+			tx.rollback();
+		}finally {
+			session.close();
+		}
+	}
+
+	public boolean validateStudent(String email, String password) {
+		int result = 0;
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		try {
+			Query<Student> query = session.createNamedQuery("validateStudent",Student.class)
+					.setParameter("email", email)
+					.setParameter("password",password);
+			List<Student> r = query.getResultList();
+			result = r.size();
+			System.out.println("Result: "+result);
+		} catch (HibernateException ex) {
+			ex.printStackTrace();
+		}finally {
+			session.close();
+		}
+		if(result == 1)
+			return true;
+		else
+			return false;
+	}
+
+	public Course getStudentByEmail(String email) {
+		return null;
+	}
+
+	public void registerStudentToCourse(String email, int i) {
+		
+	}
+
+	public List<Course> getStudentCourses(String email) {
+		
+		return null;
+	}
 
 }
