@@ -13,7 +13,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -34,7 +34,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 @NamedQueries({
-	@NamedQuery(name="validateStudent",query="From Student s where s.email=:email and s.password=:password")
+	@NamedQuery(name="validateStudent",query="From Student s where s.email=:email and s.password=:password"),
+	@NamedQuery(name="getStudentAndCoursesByEmail",query="from Student where email=:email"),
+//	@NamedQuery(name="getStudentByEmail",query="From Student where email=:email")
 })
 @Entity
 @Table(name="student")
@@ -49,7 +51,7 @@ public class Student {
 	@Column(columnDefinition = "varchar(50)")
 	String password;
 	@ToString.Exclude
-	@OneToMany(cascade = {CascadeType.MERGE,CascadeType.DETACH,CascadeType.PERSIST,CascadeType.REFRESH},fetch = FetchType.EAGER)
+	@ManyToMany(cascade = {CascadeType.MERGE,CascadeType.DETACH,CascadeType.PERSIST,CascadeType.REFRESH},fetch = FetchType.EAGER)
 	@JoinTable(name = "student_courses",
 	joinColumns = @JoinColumn(name="student_email"),
 	inverseJoinColumns = @JoinColumn(name="courses_id"))

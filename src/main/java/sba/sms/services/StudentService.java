@@ -49,7 +49,7 @@ public class StudentService implements StudentI{
 		Student student = null;
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		try {
-			Query<Student> query = session.createQuery("From Student where email=:email", Student.class)
+			Query<Student> query = session.createNamedQuery("getStudentAndCoursesByEmail", Student.class)
 					.setParameter("email", email);
 			student = query.getSingleResult();
 		} catch (HibernateException ex) {
@@ -106,7 +106,7 @@ public class StudentService implements StudentI{
 		List<Course> course = null;
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		try {
-			Query<Student> query = session.createQuery("from Student where email=:email", Student.class)
+			Query<Student> query = session.createNamedQuery("getStudentAndCoursesByEmail", Student.class)
 					.setParameter("email", email);
 			Student s = query.getSingleResult();
 			course = s.getCourses();
@@ -117,87 +117,4 @@ public class StudentService implements StudentI{
 		}
 		return course;
 	}
-	
-	
-//	
-//	
-//	public void createStudent(Student student) {
-//		Session session = HibernateUtil.getSessionFactory().openSession();
-//		Transaction tx = session.beginTransaction();
-//		try {
-//			session.persist(student);
-//			tx.commit();
-//		} catch (HibernateException ex) {
-//			ex.printStackTrace();
-//			tx.rollback();
-//		} finally {
-//			session.close();
-//		}
-//	}
-//
-//	public boolean validateStudent(String email, String password) {
-//		int result = 0;
-//		Session session = HibernateUtil.getSessionFactory().openSession();
-//		try {
-//			Query<Student> query = session.createNamedQuery("validateStudent", Student.class)
-//					.setParameter("email", email).setParameter("password", password);
-//			List<Student> r = query.getResultList();
-//			result = r.size();
-//			System.out.println("Result: " + result);
-//		} catch (HibernateException ex) {
-//			ex.printStackTrace();
-//		} finally {
-//			session.close();
-//		}
-//		if (result == 1)
-//			return true;
-//		else
-//			return false;
-//	}
-//
-//	public Course getStudentByEmail(String email) {
-//		return null;
-//	}
-//
-//	public void registerStudentToCourse(String email, int i) {
-//		Session session = HibernateUtil.getSessionFactory().openSession();
-//		Transaction tx = null;
-//		try {
-//			Student s = session.get(Student.class,email);
-//			Course c = session.get(Course.class,i);
-//			tx = session.beginTransaction();
-//			s.addCourse(c);
-//			session.merge(s);
-//			tx.commit();
-//
-//		} catch (HibernateException ex) {
-//			ex.printStackTrace();
-//			tx.rollback();
-//		} finally {
-//			session.close();
-//		}
-//	}
-//
-//	public List<Course> getStudentCourses(String email) {
-//		List<Course> course = null;
-//		Session session = HibernateUtil.getSessionFactory().openSession();
-//		try {
-//			Query<Student> query = session.createQuery("from Student where email=:email", Student.class)
-//					.setParameter("email", email);
-//			Student s = query.getSingleResult();
-//			course = s.getCourses();
-//		} catch (HibernateException ex) {
-//			ex.printStackTrace();
-//		}finally {
-//			session.close();
-//		}
-//		return course;
-//	}
-//
-//	@Override
-//	public List<Student> getAllStudents() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
 }

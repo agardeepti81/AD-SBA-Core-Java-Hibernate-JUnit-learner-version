@@ -34,8 +34,8 @@ class StudentServiceTest {
                 new Student("ariadna@gmail.com", "ariadna ramirez", "password"),
                 new Student("bolaji@gmail.com", "bolaji saibu", "password")
         ));
-
         assertThat(studentService.getAllStudents()).hasSameElementsAs(expected);
-
     }
+    
+    
 }

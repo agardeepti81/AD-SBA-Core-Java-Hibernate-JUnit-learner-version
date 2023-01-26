@@ -3,6 +3,7 @@ package sba.sms.models;
 import java.util.List;
 import java.util.Objects;
 
+import org.hibernate.annotations.NamedQuery;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,6 +31,7 @@ import lombok.experimental.FieldDefaults;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
+@NamedQuery(name="getCourseById",query="From Course where id=:id")
 @Entity
 @Table(name="course")
 public class Course {
@@ -63,6 +65,4 @@ public class Course {
 				&& Objects.equals(students, other.students);
 	}
 	
-	
-
 }

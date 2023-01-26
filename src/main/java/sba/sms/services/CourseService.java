@@ -7,11 +7,13 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import sba.sms.dao.CourseI;
 import sba.sms.models.Course;
 import sba.sms.utils.HibernateUtil;
 
-public class CourseService  {
+public class CourseService implements CourseI {
 
+	@Override
 	public void createCourse(Course course) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction tx = session.beginTransaction();
@@ -26,12 +28,14 @@ public class CourseService  {
 		}
 	}
 
-	public List<Course> getAllCourses() {
-		List<Course> result = null;
+	@Override
+	public Course getCourseById(int courseId) {
+		Course result = null;
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		try {
-			Query<Course> query = session.createQuery("From Course", Course.class);
-			result = query.getResultList();
+			Query<Course> query = session.createNamedQuery("getCourseById", Course.class)
+					.setParameter("id", courseId);
+			result = query.getSingleResult();
 		} catch (HibernateException ex) {
 			ex.printStackTrace();
 		}finally {
@@ -40,13 +44,13 @@ public class CourseService  {
 		return result;
 	}
 
-	public Course getCourseById(int courseId) {
-		Course result = null;
+	@Override
+	public List<Course> getAllCourses() {
+		List<Course> result = null;
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		try {
-			Query<Course> query = session.createQuery("From Course where id=:id", Course.class)
-					.setParameter("id", courseId);
-			result = query.getSingleResult();
+			Query<Course> query = session.createQuery("From Course", Course.class);
+			result = query.getResultList();
 		} catch (HibernateException ex) {
 			ex.printStackTrace();
 		}finally {
