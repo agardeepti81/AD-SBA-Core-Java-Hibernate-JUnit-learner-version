@@ -80,4 +80,9 @@ public class Student {
 		return Objects.equals(courses, other.courses) && Objects.equals(email, other.email)
 				&& Objects.equals(name, other.name) && Objects.equals(password, other.password);
 	}
+
+	public void addCourse(Course c) {
+		this.courses.add(c);
+	}
+
 }
