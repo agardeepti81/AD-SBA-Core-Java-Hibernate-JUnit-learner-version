@@ -12,7 +12,7 @@ import sba.sms.models.Course;
 import sba.sms.models.Student;
 import sba.sms.utils.HibernateUtil;
 
-public class StudentService implements StudentI{
+public class StudentService implements StudentI {
 
 	@Override
 	public List<Student> getAllStudents() {
@@ -83,21 +83,26 @@ public class StudentService implements StudentI{
 
 	@Override
 	public void registerStudentToCourse(String email, int courseId) {
+		StudentService ss = new StudentService();
+		boolean result = ss.validateDuplicateCourse(email, courseId);
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction tx = null;
-		try {
-			Student s = session.get(Student.class,email);
-			Course c = session.get(Course.class,courseId);
-			tx = session.beginTransaction();
-			s.addCourse(c);
-			session.merge(s);
-			tx.commit();
-
-		} catch (HibernateException ex) {
-			ex.printStackTrace();
-			tx.rollback();
-		} finally {
-			session.close();
+		if (result == false) {
+			try {
+				Student s = session.get(Student.class, email);
+				Course c = session.get(Course.class, courseId);
+				tx = session.beginTransaction();
+				s.addCourse(c);
+				session.merge(s);
+				tx.commit();
+			} catch (HibernateException ex) {
+				ex.printStackTrace();
+				tx.rollback();
+			} finally {
+				session.close();
+			}
+		} else {
+			System.out.println("\nAdding Duplicate Course!! PLEASE TRY AGAIN.\n\n");
 		}
 	}
 
@@ -112,9 +117,22 @@ public class StudentService implements StudentI{
 			course = s.getCourses();
 		} catch (HibernateException ex) {
 			ex.printStackTrace();
-		}finally {
+		} finally {
 			session.close();
 		}
 		return course;
+	}
+
+	public boolean validateDuplicateCourse(String email, int courseId) {
+		boolean result = false;
+		StudentService ss = new StudentService();
+		List<Course> studentCourses = ss.getStudentCourses(email);
+		for (Course c : studentCourses) {
+			if (c.getId() == courseId) {
+				result = true;
+				break;
+			}
+		}
+		return result;
 	}
 }
